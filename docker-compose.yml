@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+  digdag:
+    build: .
+    container_name: digdag
+    volumes:
+      - "./workflow:/home/digdag"
+    ports:
+      - "65432:65432"
+    environment:
+      WAIT_HOSTS: postgresql:${DB_PORT}

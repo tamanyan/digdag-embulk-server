@@ -1,0 +1,8 @@
+.tags
+*.swp
+*.lck
+*.*!
+*~
+!.gitkeep
+.DS_Store
+.env
