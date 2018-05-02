@@ -22,7 +22,6 @@ ENV DIGDAG_VERSION=0.9.24 \
 # setup digdag server props
 COPY digdag.properties /etc/digdag.properties
 RUN envsubst < /etc/digdag.properties > /etc/digdag.properties
-RUN cat /etc/digdag.properties
 
 # Installin docker client
 ENV DOCKER_CLIENT_VERSION=1.12.6 \
@@ -50,4 +49,4 @@ RUN embulk gem install embulk-input-mysql \
 
 EXPOSE 65432 65433
 
-CMD ${INSTALL_DIR}/wait && digdag server --config /etc/digdag.properties
+CMD ${INSTALL_DIR}/wait && digdag server --config /etc/digdag.properties --task-log /var/lib/digdag/logs/tasks
