@@ -2,13 +2,20 @@ version: '2'
 
 services:
   postgresql:
-    image: bitnami/postgresql:latest
+    image: postgres:9
     container_name: postgresql
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    command:
+      - postgres
+      - -c
+      - superuser_reserved_connections=30
+      - -c
+      - max_connections=1000
   digdag:
     build: .
     container_name: digdag
@@ -16,5 +23,6 @@ services:
       - "./workflow:/home/digdag"
     ports:
       - "65432:65432"
+      - "65433:65433"
     environment:
       WAIT_HOSTS: postgresql:${DB_PORT}
