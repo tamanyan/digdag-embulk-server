@@ -1,15 +1,28 @@
 FROM openjdk:8-jdk
 
-MAINTAINER Taketo Yoshida <tamanyan.sss@gmail.com>
+LABEL maintainer Taketo Yoshida <tamanyan.sss@gmail.com>
+
+# args
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_PORT
+ARG DB_NAME
+ARG DIGDAG_ENCRYPTION_KEY
+
+RUN apt-get update && apt-get install -y \
+  curl gettext-base postgresql-client vim \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV DIGDAG_VERSION=0.9.24 \
     EMBULK_VERSION=0.9.7 \
     INSTALL_DIR=/usr/local/bin \
     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
-RUN apt-get update && apt-get install -y \
-  curl gettext-base postgresql-client \
-  && rm -rf /var/lib/apt/lists/*
+# setup digdag server props
+COPY digdag.properties /etc/digdag.properties
+RUN envsubst < /etc/digdag.properties > /etc/digdag.properties
+RUN cat /etc/digdag.properties
 
 # Installin docker client
 ENV DOCKER_CLIENT_VERSION=1.12.6 \
@@ -29,31 +42,9 @@ RUN chmod 755 ${INSTALL_DIR}/embulk
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.0.0/wait ${INSTALL_DIR}/wait
 RUN chmod 755 ${INSTALL_DIR}/wait
 
-COPY digdag.properties /etc/digdag.properties
-
-# RUN useradd -m -d /home/digdag -s /bin/sh -U digdag && \
-#     chown digdag /home/digdag
-
-# WORKDIR /home/digdag
-
-# USER digdag
-
 # Install embulk plugins
 # RUN embulk gem install embulk-input-mysql embulk-input-postgresql embulk-input-sqlserver embulk-output-bigquery
 
 EXPOSE 65432 65433
-
-# CMD ${INSTALL_DIR}/wait && digdag server --bind 0.0.0.0 \
-#                           --port 65432 \
-#                           --config /etc/digdag.properties \
-#                           --log /var/lib/digdag/logs/server \
-#                           --task-log /var/lib/digdag/logs/tasks \
-#                           -X database.type=postgresql \
-#                           -X database.user=$DB_USER \
-#                           -X database.password=$DB_PASSWORD \
-#                           -X database.host=$DB_HOST \
-#                           -X database.port=$DB_PORT \
-#                           -X database.database=$DB_NAME \
-#                           -X digdag.secret-encryption-key=$DIGDAG_ENCRYPTION_KEY
 
 CMD ${INSTALL_DIR}/wait && digdag server --config /etc/digdag.properties
