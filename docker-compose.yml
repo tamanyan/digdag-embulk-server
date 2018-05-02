@@ -27,8 +27,6 @@ services:
         DB_NAME: ${DB_NAME}
         DIGDAG_ENCRYPTION_KEY: ${DIGDAG_ENCRYPTION_KEY}
     container_name: digdag
-    volumes:
-      - "./workflow:/home/digdag"
     ports:
       - "65432:65432"
       - "65433:65433"

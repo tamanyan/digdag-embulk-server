@@ -43,7 +43,10 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.0.0/wait
 RUN chmod 755 ${INSTALL_DIR}/wait
 
 # Install embulk plugins
-# RUN embulk gem install embulk-input-mysql embulk-input-postgresql embulk-input-sqlserver embulk-output-bigquery
+RUN embulk gem install embulk-input-mysql \
+                       embulk-input-postgresql \
+                       embulk-input-sqlserver \
+                       embulk-output-bigquery
 
 EXPOSE 65432 65433
 

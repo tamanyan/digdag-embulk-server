@@ -1,0 +1,10 @@
+timezone: Asia/Tokyo
+
+schedule:
+  daily>: 23:00:00
+
+_export:
+  workflow_name: MySQL to BigQuery workflow
+
++start:
+ echo>: Start importing data from MySQL

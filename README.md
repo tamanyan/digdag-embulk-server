@@ -38,3 +38,9 @@ docker-compose up -d
 ```
 
 Access http://localhost:65432/
+
+## Login Containter
+
+```
+docker-compose exec digdag bin/sh
+```
